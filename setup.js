@@ -1,45 +1,55 @@
 
 const Cell = require('./Cell')
 
-let inputString = `3 6 1
-###*OO
-O#OA%O
-###*OO
-2 3 2 1
-`;
+class Grid {
+  constructor(cols, rows) {
+    this.grid = [...Array(cols)].map(() => [...Array(rows)])
 
-inputString = inputString.replace(/\s*$/, '')
-  .split('\n')
-  .map(str => str.replace(/\s*$/, ''));
+    this.grid.cell = ({ row, col }) => {
+      return this.grid[row][col]
+    }
 
-
-function readGridTextLine(line) {
-  return inputString[line];
+    return this.grid
+  }
 }
 
-module.exports = function setup() {
-  const nmk = readGridTextLine(0).split(' ');
-  const n = parseInt(nmk[0], 10);
-  const m = parseInt(nmk[1], 10);
-  const k = parseInt(nmk[2], 10);
+module.exports = function setup(input) {
+  const string = input.replace(/\s*$/, '')
+    .split('\n')
+    .map(str => str.replace(/\s*$/, ''))
+
+  const readGridTextLine = (line) => {
+    return string[line]
+  }
+
+  const nmk = readGridTextLine(0).split(' ')
+  const n = parseInt(nmk[0], 10)
+  const m = parseInt(nmk[1], 10)
+  const k = parseInt(nmk[2], 10)
 
   // n = cols, m = rows
-  const grid = [...Array(n)].map(() => [...Array(m)]);
+  const grid = new Grid(n, m)
+  let frog
 
-  for (let col = 0; col < n; col++) {
-    for (let row = 0; row < m; row++) {
-      grid[col][row] = new Cell(readGridTextLine(col + 1)[row])
+  for (let row = 0; row < n; row++) {
+    for (let col = 0; col < m; col++) {
+      const char = readGridTextLine(row + 1)[col]
+
+      grid[row][col] = new Cell(char)
+
+      if (char === 'A')
+        frog = { row, col }
     }
   }
 
   const tunnels = []
   for (let kItr = 0; kItr < k; kItr++) {
-    const i1J1I2J2 = readGridTextLine(n + 1).split(' ');
+    const i1J1I2J2 = readGridTextLine(n + 1).split(' ')
 
-    const i1 = parseInt(i1J1I2J2[0], 10);
-    const j1 = parseInt(i1J1I2J2[1], 10);
-    const i2 = parseInt(i1J1I2J2[2], 10);
-    const j2 = parseInt(i1J1I2J2[3], 10);
+    const i1 = parseInt(i1J1I2J2[0], 10)
+    const j1 = parseInt(i1J1I2J2[1], 10)
+    const i2 = parseInt(i1J1I2J2[2], 10)
+    const j2 = parseInt(i1J1I2J2[3], 10)
 
     tunnels.push([
       { col: j1 - 1, row: i1 - 1 },
@@ -48,12 +58,12 @@ module.exports = function setup() {
   }
 
   tunnels.map(tnl => {
-    const cell1 = grid[tnl[0].col][tnl[0].row]
-    const cell2 = grid[tnl[1].col][tnl[1].row]
+    const cell1 = grid[tnl[0].row][tnl[0].col]
+    const cell2 = grid[tnl[1].row][tnl[1].col]
 
     cell1.tunnel = tnl[1]
     cell2.tunnel = tnl[0]
   })
 
-  return { grid, tunnels }
+  return { grid, tunnels, frog }
 }

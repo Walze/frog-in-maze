@@ -13,36 +13,38 @@ module.exports = class Cell {
   constructor(char) {
     this.walkable = true
     this.mine = false
+    this.exit = false
     this.tunnel = false
 
     this._setProps(char)
   }
 
   _setProps(char) {
-    this.char = char;
+    this.char = char
 
     switch (char) {
       // wall
       case '#':
         this.walkable = false
-        break;
-        
+        break
+
       // frog
       case 'A':
-        break;
+        break
 
       // A MINE
       case '*':
         this.mine = true
-        break;
+        break
 
       // exit
       case '%':
-        break;
+        this.exit = true
+        break
 
       // free
       case 'O':
-        break;
+        break
     }
   }
 }
