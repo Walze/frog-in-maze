@@ -7,6 +7,8 @@ O#OA%O
 2 3 2 1
 */
 
+console.log('\n')
+
 let inputString = `3 6 1
 ###*OO
 O#OA%O
@@ -14,80 +16,28 @@ O#OA%O
 2 3 2 1
 `
 
-class Frog {
-  constructor({ col, row }, grid) {
-    this.cell = { col, row }
-    this.beforeMove = { col, row }
-    this.grid = grid
-  }
 
-  get move() {
-    return {
-      up: this.up.bind(this),
-      down: this.down.bind(this),
-      left: this.left.bind(this),
-      right: this.right.bind(this)
-    }
-  }
+const event = require('./event')
 
-  _update() {
-    const movedCell = this.grid.cell(this.beforeMove)
+const Setup = require('./Setup')
+const Frog = require('./Frog')
+const { grid, frogPos } = Setup(inputString)
 
-    if (movedCell.mine) {
-      return console.log('DEAD')
-    }
 
-    if (movedCell.tunnel) {
-      console.log('TUNNELED')
-      this.cell = movedCell.tunnel
-      this.beforeMove = this.cell
+let wins = 0
 
-      return
-    }
+const InitialFrog = new Frog(frogPos, grid)
 
-    if (movedCell.exit) {
-      return console.log('WIN')
-    }
+for (const prop in InitialFrog.move) {
+  const frog = new Frog(frogPos, grid)
 
-    if (movedCell.walkable) {
-      this.cell = this.beforeMove
-      return
-    }
+  const move = frog.move[prop]
 
-  }
-
-  up() {
-    this.beforeMove.row--
-    this._update()
-  }
-
-  down() {
-    this.beforeMove.row++
-    this._update()
-  }
-
-  left() {
-    this.beforeMove.col--
-    this._update()
-  }
-
-  right() {
-    this.beforeMove.col++
-    this._update()
-  }
 }
 
-const setup = require('./setup')
-const { grid, frog } = setup(inputString)
 
-console.log(grid)
-console.log()
+console.log(grid, grid[0][0])
 
-const frog1 = new Frog(frog, grid)
-
-console.log(frog1.cell)
-frog1.move.right()
-console.log(frog1.cell)
 
 process.stdin.resume()
 process.stdin.setEncoding('utf-8')

@@ -22,8 +22,6 @@
             "single"
         ],
         "semi": [
-            "error",
-            "never"
         ]
     }
 }

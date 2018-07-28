@@ -5,15 +5,26 @@ class Grid {
   constructor(cols, rows) {
     this.grid = [...Array(cols)].map(() => [...Array(rows)])
 
-    this.grid.cell = ({ row, col }) => {
-      return this.grid[row][col]
-    }
+    this.grid.cell = this.cell
+    this.grid.cols = cols
+    this.grid.rows = rows
 
     return this.grid
   }
+
+  cell({ row, col }) {
+    // this = this.grid
+
+    if (row > this.rows || row < 0) return null
+
+    if (col > this.cols || col < 0) return null
+
+
+    return this[row][col]
+  }
 }
 
-module.exports = function setup(input) {
+module.exports = function Setup(input) {
   const string = input.replace(/\s*$/, '')
     .split('\n')
     .map(str => str.replace(/\s*$/, ''))
@@ -22,27 +33,36 @@ module.exports = function setup(input) {
     return string[line]
   }
 
+
+
+
+
   const nmk = readGridTextLine(0).split(' ')
   const n = parseInt(nmk[0], 10)
   const m = parseInt(nmk[1], 10)
   const k = parseInt(nmk[2], 10)
 
-  // n = cols, m = rows
+  // = cols, m = rows
   const grid = new Grid(n, m)
-  let frog
+  let frogPos
 
   for (let row = 0; row < n; row++) {
     for (let col = 0; col < m; col++) {
       const char = readGridTextLine(row + 1)[col]
 
-      grid[row][col] = new Cell(char)
+      grid[row][col] = new Cell(grid, char, { row, col })
 
       if (char === 'A')
-        frog = { row, col }
+        frogPos = { row, col }
     }
   }
 
+
+
+
+
   const tunnels = []
+
   for (let kItr = 0; kItr < k; kItr++) {
     const i1J1I2J2 = readGridTextLine(n + 1).split(' ')
 
@@ -65,5 +85,11 @@ module.exports = function setup(input) {
     cell2.tunnel = tnl[0]
   })
 
-  return { grid, tunnels, frog }
+
+
+
+
+
+
+  return { grid, tunnels, frogPos }
 }
